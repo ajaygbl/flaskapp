@@ -10,11 +10,6 @@ headers = {"service" : "argo",
 "end" : "1709423999",
 "Content-Type" : "application/json"}
 
-headers2 = {
-    "Content-Type" : "application/json",
-    "X-AIRBNB-REQ-USERID" : "48283302"
-}
-
 payload = {"operationName": "OverviewResourceQuery",
 "variables": {
     "name": "argo",
@@ -38,20 +33,8 @@ payload = {"operationName": "OverviewResourceQuery",
 "query": "query OverviewResourceQuery($name: String!, $start: Int!, $end: Int!, $filters: [ServiceMetricFilter], $limit: Int!, $sortdimension: ServiceMetricNames, $sortdirection: SortByDirections) {\n  service(name: $name, interval: {start: $start, end: $end}) {\n    name\n    metrics(limit: $limit, names: [count, latency_p95_us, latency_p99_us, latency_p50_us, avg_latency_us, fatal_error_count, fatal_error_rate, non_fatal_error_rate, non_fatal_error_count, error_count, error_rate], dimensions: [resource], granularity: all, filters: $filters, sortdimension: $sortdimension, sortdirection: $sortdirection) {\n      points {\n        values {\n          metric\n          value\n          __typename\n        }\n        __typename\n      }\n      dimensions {\n        dimension\n        value\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
 }
 
-payload2 = {
-"operationName": "Slo",
-"query": "query Slo($service: String!, $start: Int!, $end: Int!) {\n  service_weekly_slo(service: $service, start: $start, end: $end) {\n    slos\n    __typename\n  }\n  scry_teams: scry_teams_for_project(project_name: $service)\n  endpoints(services: [$service]) {\n    service\n    resource\n    application\n    error_budget\n    uptime(interval: {start: $start, end: $end}) {\n      percent\n      total_minutes\n      violation_minutes\n      __typename\n    }\n    previous_week_uptime(interval: {start: $start, end: $end}) {\n      percent\n      __typename\n    }\n    slos {\n      name\n      title\n      description\n      uptime(interval: {start: $start, end: $end}) {\n        percent\n        __typename\n      }\n      endpoint_id\n      spec\n      spec_format\n      evaluations(interval: {start: $start, end: $end}) {\n        started_at\n        ended_at\n        satisfied\n        slo_id\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n",
-"variables": {"service": "argo", "start": 1711843200, "end": 1712447999}
-}
-
-@app.route("/argo")
+@app.route("/slo")
 def home():
-    response = requests.post(url, headers=headers, data=json.dumps(payload))
-    respJson = response.json()
-    return respJson
+    response2 = requests.post(url, headers=headers, data=json.dumps(payload))
+    return response2.json()
 
-@app.route("/argo/slo")
-def slo():
-    response2 = requests.post(url, headers=headers2, data=json.dumps(payload2))
-    respjson2 = response2.json()
-    return respjson2
